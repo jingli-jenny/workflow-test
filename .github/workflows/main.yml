@@ -1,0 +1,30 @@
+name: Build and test
+
+on:
+  issue_comment:
+    types: [created, edited]
+
+jobs:
+  ubuntu:
+    name: Build and test AMD64 Ubuntu ${{ matrix.ubuntu }}
+    runs-on: ubuntu-latest
+    if: "(github.event_name == 'push' ||  (github.event_name == 'issue_comment' && startsWith(github.event.comment.body, '/rerun-unit')))"
+    timeout-minutes: 90
+    strategy:
+      fail-fast: false
+      matrix:
+        ubuntu: [18.04]
+    env:
+      UBUNTU: ${{ matrix.ubuntu }}
+    steps:
+      - name: GitHub Script
+        uses: actions/github-script@v5.0.0
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+        with:
+          script: |
+            github.rest.issues.createComment({
+              issue_number: context.issue.number,
+              repo: context.repo.repo,
+              body: '👋 Thanks for reporting!'
+            })
