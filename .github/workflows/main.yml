@@ -1,7 +1,9 @@
 name: Build and test
 
-on: push
-on:
+
+on: 
+  push:
+    branches: [main]
   issue_comment:
     types: [created, edited]
 permissions:
