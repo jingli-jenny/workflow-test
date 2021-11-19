@@ -36,12 +36,11 @@ jobs:
         with:
           script: |
             const { JOB_URL } = process.env
-            const commentBody = "runner url is  `$JOB_URL` " 
             github.rest.issues.createComment({
               issue_number: context.issue.number,
               owner: context.repo.owner,
               repo: context.repo.repo,
-              body: commentBody 
+              body: `$JOB_URL`
             })
 
         
