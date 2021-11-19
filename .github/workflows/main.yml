@@ -29,22 +29,13 @@ jobs:
         id: get_job_url
         shell: bash
         run:  |        
-          echo "::set-output name=job-url::'test'"
-      - name: Test get job url 
-        if: "github.event_name == 'issue_comment'"
-        env:
-          GITHUB_TOKEN: ${{ github.token }}
-          JOB_URL: ${{ steps.get_job_url.outputs.job-url }}
-          TEST_ENV: "ttt"
-        run: |
-          echo "${JOB_URL}"
-          echo "${TEST_ENV}"
+          echo "::set-output name=job-url::'$GITHUB_SERVER_URL/$GITHUB_REPOSITORY/actions/runs/$GITHUB_RUN_ID'"
       - name: Create reply comment on PR
         uses: actions/github-script@v5.0.0 
         if: "github.event_name == 'issue_comment'"
         env:
           GITHUB_TOKEN: ${{ github.token }}
-          JOB_URL: ${{ steps.get_job_url.job-url }}
+          JOB_URL: ${{ steps.get_job_url.outputs.job-url }}
         with:
           script: |
             const { JOB_URL } = process.env
