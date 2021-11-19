@@ -7,11 +7,6 @@ permissions:
   pull-requests: write
   issues: write
 jobs:
-  dump:
-    runs-on: ubuntu-latest
-    steps:
-      - name: Dump context
-        uses: crazy-max/ghaction-dump-context@v1
   ubuntu:
     name: Build and test AMD64 Ubuntu ${{ matrix.ubuntu }}
     runs-on: ubuntu-latest
@@ -23,20 +18,10 @@ jobs:
         ubuntu: [18.04]
     env:
       UBUNTU: ${{ matrix.ubuntu }}
-    steps:
-      - name: GitHub Script
-        uses: actions/github-script@v5.0.0
-        env:
-          GITHUB_TOKEN: ${{ github.token }}
-        with:
-          script: |
-            const creator = context.payload.sender.login
+    outputs:
 
-            const commentBody = "comment user id is {{ context.comment.user.id }} \n
-             job id is {{ github.job}} " 
-            github.rest.issues.createComment({
-              issue_number: context.issue.number,
-              owner: context.repo.owner,
-              repo: context.repo.repo,
-              body: commentBody 
-            })
+    steps:
+      - name: Dump context
+        uses: crazy-max/ghaction-dump-context@v1
+      - name: Get Userinfo
+        run: echo user name is ${{ env.GITHUB_ACTOR }}
