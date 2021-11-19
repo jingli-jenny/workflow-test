@@ -1,2 +1,2 @@
 # workflow-test
-add test 
+add test a
