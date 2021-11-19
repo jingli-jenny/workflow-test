@@ -34,8 +34,10 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ github.token }}
           JOB_URL: ${{ steps.get_job_url.job-url }}
+          TEST_ENV: "ttt"
         run: |
           echo "${JOB_URL}"
+          echo "${TEST_ENV}"
       - name: Create reply comment on PR
         uses: actions/github-script@v5.0.0 
         if: "github.event_name == 'issue_comment'"
