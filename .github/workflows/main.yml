@@ -24,4 +24,4 @@ jobs:
       - name: Dump context
         uses: crazy-max/ghaction-dump-context@v1
       - name: Echo Environment Variables for test
-        run: echo "user name is ${{ env.GITHUB_ACTOR }}, run id is ${{ env.GITHUB_RUN_ID }}"
+        run: echo user name is ${{ env.GITHUB_ACTOR }}, run id is ${{ env.GITHUB_RUN_ID }}
