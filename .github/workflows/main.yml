@@ -33,6 +33,7 @@ jobs:
           GITHUB_TOKEN: ${{ github.token }}
         with:
           script: |
+            const { GITHUB_SERVER_URL,GITHUB_REPOSITORY, GITHUB_RUN_ID } = process.env
             const commentBody = "runner url is  `$GITHUB_SERVER_URL/$GITHUB_REPOSITORY/actions/runs/$GITHUB_RUN_ID` " 
             github.rest.issues.createComment({
               issue_number: context.issue.number,
