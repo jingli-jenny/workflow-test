@@ -38,12 +38,12 @@ jobs:
           JOB_URL: ${{ steps.get_job_url.outputs.job-url }}
         with:
           script: |
-            const { JOB_URL } = process.env
+            const {JOB_URL} = process.env
             github.rest.issues.createComment({
               issue_number: context.issue.number,
               owner: context.repo.owner,
               repo: context.repo.repo,
-              body: `$JOB_URL`
+              body: `${JOB_URL}`
             })
 
         
