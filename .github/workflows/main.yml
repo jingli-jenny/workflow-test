@@ -28,7 +28,7 @@ jobs:
         if: "github.event_name == 'issue_comment'"
         id: get_job_url
         run:  |        
-          echo "::set-output name=job-url::'$GITHUB_SERVER_URL/$GITHUB_REPOSITORY/actions/runs/$GITHUB_RUN_ID'"
+          echo "::set-output name=job-url::'test'"
       - name: Test get job url 
         if: "github.event_name == 'issue_comment'"
         env:
