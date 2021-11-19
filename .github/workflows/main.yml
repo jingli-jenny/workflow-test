@@ -27,13 +27,14 @@ jobs:
       - name: Get Job URL
         if: "github.event_name == 'issue_comment'"
         id: get_job_url
+        shell: bash
         run:  |        
           echo "::set-output name=job-url::'test'"
       - name: Test get job url 
         if: "github.event_name == 'issue_comment'"
         env:
           GITHUB_TOKEN: ${{ github.token }}
-          JOB_URL: ${{ steps.get_job_url.job-url }}
+          JOB_URL: ${{ steps.get_job_url.outputs.job-url }}
           TEST_ENV: "ttt"
         run: |
           echo "${JOB_URL}"
