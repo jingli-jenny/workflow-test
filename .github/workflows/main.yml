@@ -25,9 +25,10 @@ jobs:
           GITHUB_TOKEN: ${{ github.token }}
         with:
           script: |
+            const commentBody = "comment user id is {{ comment.user.id }}" 
             github.rest.issues.createComment({
               issue_number: context.issue.number,
               owner: context.repo.owner,
               repo: context.repo.repo,
-              body: '👋 Thanks for reporting!'
+              body: commentBody 
             })
