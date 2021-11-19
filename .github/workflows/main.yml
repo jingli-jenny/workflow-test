@@ -7,6 +7,11 @@ permissions:
   pull-requests: write
   issues: write
 jobs:
+  dump:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Dump context
+        uses: crazy-max/ghaction-dump-context@v1
   ubuntu:
     name: Build and test AMD64 Ubuntu ${{ matrix.ubuntu }}
     runs-on: ubuntu-latest
@@ -25,7 +30,10 @@ jobs:
           GITHUB_TOKEN: ${{ github.token }}
         with:
           script: |
-            const commentBody = "comment user id is {{ comment.user.id }}" 
+            const creator = context.payload.sender.login
+
+            const commentBody = "comment user id is {{ context.comment.user.id }} \n
+             job id is {{ github.job}} " 
             github.rest.issues.createComment({
               issue_number: context.issue.number,
               owner: context.repo.owner,
