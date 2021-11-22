@@ -35,6 +35,12 @@ jobs:
               echo "Please check if the repository secret GET_ORG_MEMBERS  still  exists and have the permission to read organization members."
               exit 1
            fi
+      - name: Get Job URL
+        if: "github.event_name == 'issue_comment' && steps.is_organization_member.outputs.is-member == 'true'"
+        id: get_job_url
+        shell: bash
+        run:  |        
+          echo "::set-output name=job-url::'$GITHUB_SERVER_URL/$GITHUB_REPOSITORY/actions/runs/$GITHUB_RUN_ID'"
       - name: Create Comment for Org Member
         if: "github.event_name == 'issue_comment' && steps.is_organization_member.outputs.is-member == 'true'"
         uses: actions-cool/issues-helper@v2.5.0       
@@ -43,11 +49,18 @@ jobs:
           token: ${{ secrets.GITHUB_TOKEN }}
           issue-number: ${{ github.event.issue.number }}
           body: |
-            Hello ${{ github.event.sender.login }}. Workflow is running, you can get more information from url.    
-      # - name: Create Comment for Non-Org Member
-      #   if: steps.is_organization_member.outputs.is-member == 'false'
-      #   run: |
-      #    echo "not Org Member"
+            Hello ${{ github.event.sender.login }}. Workflow is successfully triggered,  get more information from ${{ steps.get_job_url.outputs.job-url }}.    
+      - name: Create Comment for Non-Org Member
+        if: "github.event_name == 'issue_comment' && steps.is_organization_member.outputs.is-member == 'false'"
+        uses: actions-cool/issues-helper@v2.5.0       
+        with:
+          actions: 'create-comment'
+          token: ${{ secrets.GITHUB_TOKEN }}
+          issue-number: ${{ github.event.issue.number }}
+          body: |
+            Hello ${{ github.event.sender.login }}, you are not in the organization ${GITHUB_REPOSITORY_OWNER}, so you do not have the permission to run the workflow,
+            please contact @jingli-jenny/support-team for help.
+           
       # - name: Create Comment for Job Url
       #   uses: actions-cool/issues-helper@v2.5.0
       #   if: "github.event_name == 'issue_comment'"
