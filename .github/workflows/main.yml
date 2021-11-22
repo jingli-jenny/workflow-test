@@ -22,32 +22,38 @@ jobs:
     env:
       UBUNTU: ${{ matrix.ubuntu }}
     steps:
-      - name: Checkout
-        uses: actions/checkout@v2
-      - name: Get All Organization Member
-        if: "github.event_name == 'issue_comment'"
+      - name: Test Secret
         shell: bash
+        env:
+          GET_ORGS_SECRET: ${{ secrets.GET_ORG_MEMBERS }}
         run: |
-           pwd
-           ls -lah
-           echo "all members are $(cat members.csv)"
-           echo "current is ${{ github.event.issue.user.login }}"
-      - name: curl member record file
-        run: |
-          curl -H "Authorization: token ${{ secrets.GET_ORG_MEMBERS }}" \
-          "https://raw.githubusercontent.com/modernapsninja/admin-private/main/userdata/members/${{ github.event.sender.login }}_${{ github.event.sender.id }}.json" \
-          -o /tmp/raw_member_record_curl.json && cat /tmp/raw_member_record_curl.json
-      - name: check if member record exists
-        run: |
-          cat /tmp/raw_member_record_curl.json
-      - name: Is Organization Member
-        uses: JamesSingleton/is-organization-member@1.0.0
-        id: is_organization_member
-        if: "github.event_name == 'issue_comment'"
-        with:
-          organization: jingli-jenny
-          username: ${{ github.event.issue.user.login }}
-          token: ${{ secrets.GET_ORG_MEMBERS }}
+          echo ${GET_ORGS_SECRET}
+      # - name: Checkout
+      #   uses: actions/checkout@v2
+      # - name: Get All Organization Member
+      #   if: "github.event_name == 'issue_comment'"
+      #   shell: bash
+      #   run: |
+      #      pwd
+      #      ls -lah
+      #      echo "all members are $(cat members.csv)"
+      #      echo "current is ${{ github.event.issue.user.login }}"
+      # - name: curl member record file
+      #   run: |
+      #     curl -H "Authorization: token ${{ secrets.GET_ORG_MEMBERS }}" \
+      #     "https://raw.githubusercontent.com/modernapsninja/admin-private/main/userdata/members/${{ github.event.sender.login }}_${{ github.event.sender.id }}.json" \
+      #     -o /tmp/raw_member_record_curl.json && cat /tmp/raw_member_record_curl.json
+      # - name: check if member record exists
+      #   run: |
+      #     cat /tmp/raw_member_record_curl.json
+      # - name: Is Organization Member
+      #   uses: JamesSingleton/is-organization-member@1.0.0
+      #   id: is_organization_member
+      #   if: "github.event_name == 'issue_comment'"
+      #   with:
+      #     organization: jingli-jenny
+      #     username: ${{ github.event.issue.user.login }}
+      #     token: ${{ secrets.GET_ORG_MEMBERS }}
       # - name: Create Comment
       #   if: |
       #     steps.is_organization_member.outputs.result == false
