@@ -36,7 +36,6 @@ jobs:
               exit 1
            fi
       - name: Create Comment for Org Member
-        shell: bash 
         if: "github.event_name == 'issue_comment' && steps.is_organization_member.outputs.is-member == 'true'"
         uses: actions-cool/issues-helper@v2.5.0       
         with:
@@ -45,10 +44,10 @@ jobs:
           issue-number: ${{ github.event.issue.number }}
           body: |
             Hello ${{ github.event.sender.login }}. Workflow is running, you can get more information from url.    
-      - name: Create Comment for Non-Org Member
-        if: steps.is_organization_member.outputs.is-member == 'false'
-        run: |
-         echo "not Org Member"
+      # - name: Create Comment for Non-Org Member
+      #   if: steps.is_organization_member.outputs.is-member == 'false'
+      #   run: |
+      #    echo "not Org Member"
       # - name: Create Comment for Job Url
       #   uses: actions-cool/issues-helper@v2.5.0
       #   if: "github.event_name == 'issue_comment'"
