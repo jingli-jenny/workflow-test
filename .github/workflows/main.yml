@@ -26,6 +26,7 @@ jobs:
         run: |
            response_code=$(curl -w %{http_code} -H "Authorization: token ${{ secrets.GET_ORG_MEMBERS }}" -H "Accept: application/vnd.github.v3+json" \
            https://api.github.com/orgs/${GITHUB_REPOSITORY_OWNER}/members/${{ github.event.sender.login }})
+           echo " response code is ${response_code} "
            if [[ ${response_code} == '204' ]];then
               echo "::set-output name=is-member::true"
            elif [[ ${response_code} == '404' ]]; then 
@@ -36,12 +37,12 @@ jobs:
            fi
       - name: Create Comment for Org Member
         shell: bash 
-        if: "${{ steps.is_organization_member.outputs.is-member }} == 'true'"
+        if: ${{ steps.is_organization_member.outputs.is-member }} == 'true'
         run: |
          echo "is Org Member"
          echo "param is ${{ steps.is_organization_member.outputs.is-member }} "
       - name: Create Comment for Non-Org Member
-        if: " ${{ steps.is_organization_member.outputs.is-member }} == 'false'"
+        if: ${{ steps.is_organization_member.outputs.is-member }} == 'false'
         run: |
          echo " need permission"
          echo "${{ steps.is_organization_member.outputs.is-member }}"
