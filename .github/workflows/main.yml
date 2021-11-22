@@ -58,8 +58,7 @@ jobs:
           token: ${{ secrets.GITHUB_TOKEN }}
           issue-number: ${{ github.event.issue.number }}
           body: |
-            Hello ${{ github.event.sender.login }}, you are not in the organization ${GITHUB_REPOSITORY_OWNER}, so you do not have the permission to run the workflow,
-            please contact @jingli-jenny/support-team for help.
+            Hello ${{ github.event.sender.login }}, you are not in the organization, so you do not have the permission to run the workflow, please contact @jingli-jenny/support-team for help.
            
       # - name: Create Comment for Job Url
       #   uses: actions-cool/issues-helper@v2.5.0
