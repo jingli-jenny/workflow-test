@@ -23,7 +23,7 @@ jobs:
       UBUNTU: ${{ matrix.ubuntu }}
     steps:
       - name: Is Organization Member
-        uses: jamessingleton/is-organization-member@v1
+        uses: JamesSingleton/is-organization-member@1.0.0
         id: is_organization_member
         if: "github.event_name == 'issue_comment'"
         with:
