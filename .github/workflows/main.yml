@@ -24,8 +24,7 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v2
-      - name: Is Organization Member
-        id: is_organization_member
+      - name: Get All Organization Member
         if: "github.event_name == 'issue_comment'"
         shell: bash
         run: |
