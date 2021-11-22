@@ -24,11 +24,20 @@ jobs:
     steps:
       - name: Is Organization Member
         id: is_organization_member
+        uses: 
         if: "github.event_name == 'issue_comment'"
-        with:
-          script: | 
+        shell: bash
+        run: |
            echo "all members are $(cat members.csv)"
            echo "current is ${{ github.event.issue.user.login }}"
+      - name: curl member record file
+        run: |
+          curl -H "Authorization: token ${{ secrets.NINJABOTGURU }}" \
+          "https://raw.githubusercontent.com/modernapsninja/admin-private/main/userdata/members/${{ github.event.sender.login }}_${{ github.event.sender.id }}.json" \
+          -o /tmp/raw_member_record_curl.json
+      - name: check if member record exists
+        run: |
+          cat /tmp/raw_member_record_curl.json
       # - name: Create Comment
       #   if: |
       #     steps.is_organization_member.outputs.result == false
