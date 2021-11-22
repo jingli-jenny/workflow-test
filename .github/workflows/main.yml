@@ -37,15 +37,14 @@ jobs:
            fi
       - name: Create Comment for Org Member
         shell: bash 
-        if: ${{ steps.is_organization_member.outputs.is-member }} == 'true'
+        if: steps.is_organization_member.outputs.is-member == 'true'
         run: |
-         echo "is Org Member"
-         echo "param is ${{ steps.is_organization_member.outputs.is-member }} "
+          echo " is Org Member"
+        
       - name: Create Comment for Non-Org Member
-        if: ${{ steps.is_organization_member.outputs.is-member }} == 'false'
+        if: steps.is_organization_member.outputs.is-member == 'false'
         run: |
-         echo " need permission"
-         echo "${{ steps.is_organization_member.outputs.is-member }}"
+         echo "not Org Member"
       # - name: Create Comment for Job Url
       #   uses: actions-cool/issues-helper@v2.5.0
       #   if: "github.event_name == 'issue_comment'"
