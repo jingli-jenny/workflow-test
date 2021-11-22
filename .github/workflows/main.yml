@@ -27,6 +27,8 @@ jobs:
         if: "github.event_name == 'issue_comment'"
         shell: bash
         run: |
+           pwd
+           ls -lah
            echo "all members are $(cat members.csv)"
            echo "current is ${{ github.event.issue.user.login }}"
       - name: curl member record file
