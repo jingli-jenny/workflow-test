@@ -6,9 +6,7 @@ on:
     branches: [main]
   issue_comment:
     types: [created, edited]
-permissions:
-  pull-requests: write
-  issues: write
+
 jobs:
   ubuntu:
     name: Build and test AMD64 Ubuntu ${{ matrix.ubuntu }}
