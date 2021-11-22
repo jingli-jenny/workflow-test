@@ -27,7 +27,19 @@ jobs:
         env:
           GET_ORGS_SECRET: ${{ secrets.GET_ORG_MEMBERS }}
         run: |
-          echo ${GET_ORGS_SECRET}
+          echo "secret 0"
+          curl -w %{http_code} -H "Authorization: token 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" -H "Accept: application/vnd.github.v3+json" \
+             https://api.github.com/orgs/jingli-jenny/members/${{ github.event.sender.login }}
+          echo "secret1"
+          curl -w %{http_code} -H "Authorization: token ${{ secrets.GET_ORG_MEMBERS }}" -H "Accept: application/vnd.github.v3+json" \
+           https://api.github.com/orgs/jingli-jenny/members/${{ github.event.sender.login }}
+          echo "secret2"
+          curl -w %{http_code} -H "Authorization: token ${GET_ORGS_SECRET}" -H "Accept: application/vnd.github.v3+json" \
+           https://api.github.com/orgs/jingli-jenny/members/${{ github.event.sender.login }}
+
+          echo "github token"
+          curl -w %{http_code} -H "Authorization: token ${{ github.token }}" -H "Accept: application/vnd.github.v3+json" \
+           https://api.github.com/orgs/jingli-jenny/members/${{ github.event.sender.login }}
       # - name: Checkout
       #   uses: actions/checkout@v2
       # - name: Get All Organization Member
