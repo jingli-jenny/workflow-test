@@ -22,10 +22,8 @@ jobs:
     env:
       UBUNTU: ${{ matrix.ubuntu }}
     steps:
-      - name: Dump context
-        uses: crazy-max/ghaction-dump-context@v1
       - name: Is Organization Member
-        uses: JamesSingleton/is-organization-member@1.0.0
+        uses: jamessingleton/is-organization-member@v1
         id: is_organization_member
         if: "github.event_name == 'issue_comment'"
         with:
