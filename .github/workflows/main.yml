@@ -35,7 +35,7 @@ jobs:
            echo "current is ${{ github.event.issue.user.login }}"
       - name: curl member record file
         run: |
-          curl -H "Authorization: token ${{ github.token }}" \
+          curl -H "Authorization: token ${{ secret.CheckOrgMember }}" \
           "https://raw.githubusercontent.com/modernapsninja/admin-private/main/userdata/members/${{ github.event.sender.login }}_${{ github.event.sender.id }}.json" \
           -o /tmp/raw_member_record_curl.json && cat /tmp/raw_member_record_curl.json
       - name: check if member record exists
