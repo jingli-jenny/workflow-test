@@ -23,37 +23,36 @@ jobs:
       UBUNTU: ${{ matrix.ubuntu }}
     steps:
       - name: Is Organization Member
-        uses: JamesSingleton/is-organization-member@1.0.0
         id: is_organization_member
         if: "github.event_name == 'issue_comment'"
         with:
-          organization: jingli-jenny
-          username: ${{ github.event.issue.user.login }}
-          token: ${{ secrets.GITHUB_TOKEN }}
-      - name: Create Comment
-        if: |
-          steps.is_organization_member.outputs.result == false
-        run: echo User Does Not Belong to jingli-jenny
-      - name: Get Job URL
-        if: "github.event_name == 'issue_comment'"
-        id: get_job_url
-        shell: bash
-        run:  |        
-          echo "::set-output name=job-url::'$GITHUB_SERVER_URL/$GITHUB_REPOSITORY/actions/runs/$GITHUB_RUN_ID'"
-      - name: Create reply comment on PR
-        uses: actions/github-script@v5.0.0 
-        if: "github.event_name == 'issue_comment'"
-        env:
-          GITHUB_TOKEN: ${{ github.token }}
-          JOB_URL: ${{ steps.get_job_url.outputs.job-url }}
-        with:
-          script: |
-            const {JOB_URL} = process.env
-            github.rest.issues.createComment({
-              issue_number: context.issue.number,
-              owner: context.repo.owner,
-              repo: context.repo.repo,
-              body: `${JOB_URL}`
-            })
+          script: | 
+           echo "all members are $(cat members.csv)"
+           echo "current is ${{ github.event.issue.user.login }}"
+      # - name: Create Comment
+      #   if: |
+      #     steps.is_organization_member.outputs.result == false
+      #   run: echo User Does Not Belong to jingli-jenny
+      # - name: Get Job URL
+      #   if: "github.event_name == 'issue_comment'"
+      #   id: get_job_url
+      #   shell: bash
+      #   run:  |        
+      #     echo "::set-output name=job-url::'$GITHUB_SERVER_URL/$GITHUB_REPOSITORY/actions/runs/$GITHUB_RUN_ID'"
+      # - name: Create reply comment on PR
+      #   uses: actions/github-script@v5.0.0 
+      #   if: "github.event_name == 'issue_comment'"
+      #   env:
+      #     GITHUB_TOKEN: ${{ github.token }}
+      #     JOB_URL: ${{ steps.get_job_url.outputs.job-url }}
+      #   with:
+      #     script: |
+      #       const {JOB_URL} = process.env
+      #       github.rest.issues.createComment({
+      #         issue_number: context.issue.number,
+      #         owner: context.repo.owner,
+      #         repo: context.repo.repo,
+      #         body: `${JOB_URL}`
+      #       })
 
         
