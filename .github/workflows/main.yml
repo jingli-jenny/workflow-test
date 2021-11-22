@@ -24,8 +24,8 @@ jobs:
         shell: bash
         id: is_organization_member
         run: |
-           response_code=$(curl -w %{http_code} -H "Authorization: token ${{ secrets.GET_ORG_MEMBERS }}" -H "Accept: application/vnd.github.v3+json" \
-           https://api.github.com/orgs/${GITHUB_REPOSITORY_OWNER}/members/${{ github.event.sender.login }})
+           response_code=$(curl -sIL -w %{http_code} -H "Authorization: token ${{ secrets.GET_ORG_MEMBERS }}" -H "Accept: application/vnd.github.v3+json" \
+           -o /dev/null https://api.github.com/orgs/${GITHUB_REPOSITORY_OWNER}/members/${{ github.event.sender.login }})
            echo " response code is ${response_code} "
            if [[ ${response_code} == '204' ]];then
               echo "::set-output name=is-member::true"
