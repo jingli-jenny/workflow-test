@@ -37,15 +37,14 @@ jobs:
            fi
       - name: Create Comment for Org Member
         shell: bash 
-        if: steps.is_organization_member.outputs.is-member == 'true'
-        uses: actions-cool/issues-helper@v2.5.0
-        if: "github.event_name == 'issue_comment'"
+        if: "github.event_name == 'issue_comment' && steps.is_organization_member.outputs.is-member == 'true'"
+        uses: actions-cool/issues-helper@v2.5.0       
         with:
           actions: 'create-comment'
           token: ${{ secrets.GITHUB_TOKEN }}
           issue-number: ${{ github.event.issue.number }}
           body: |
-            Hello ${{ github.event.issue.user.login }}. Add some comments.      
+            Hello ${{ github.event.sender.login }}. Workflow is running, you can get more information from url.    
       - name: Create Comment for Non-Org Member
         if: steps.is_organization_member.outputs.is-member == 'false'
         run: |
