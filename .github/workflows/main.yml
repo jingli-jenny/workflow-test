@@ -26,7 +26,7 @@ jobs:
         id: is_organization_member
         uses: 
         if: "github.event_name == 'issue_comment'"
-        shell: bash
+        # shell: bash
         run: |
            echo "all members are $(cat members.csv)"
            echo "current is ${{ github.event.issue.user.login }}"
