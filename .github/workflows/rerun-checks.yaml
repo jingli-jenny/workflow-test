@@ -1,26 +1,18 @@
 on:
   pull_request:
+    types: [opened]
+  issue_comment:
+    types: [ created ]
 jobs:
-    add-labels-issue:
+   rerun-checks:
       runs-on: ubuntu-latest
-      if: contains(github.event.comment.body, '/add-invalid') && github.event_name == 'pull_request_review_comment'
       steps:
-      - uses: actions/checkout@v2
-      - name: Add label
-        uses: actions/github-script@0.9.0
-        if: success()
+      - uses: khan/pull-request-comment-trigger@master
+        id: check
         with:
-          github-token: ${{secrets.GITHUB_TOKEN}}
-          script: |
-            github.issues.addLabels({
-              issue_number: context.payload.pull_request.number,
-              owner: context.repo.owner,
-              repo: context.repo.repo,
-              labels: ['invalid']
-            })
-            github.issues.createComment({
-              issue_number: context.payload.pull_request.number,
-              owner: context.repo.owner,
-              repo: context.repo.repo,
-              body: '👋 Added invalid :)!'
-            })
+          trigger: '/run-checks'
+          reaction: rocket
+        env:
+          GITHUB_TOKEN: '${{ secrets.GITHUB_TOKEN }}'
+      - run: 'echo Found it!'
+        if: steps.check.outputs.triggered == 'true'
