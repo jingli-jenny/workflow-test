@@ -20,8 +20,8 @@ jobs:
         id: create_check_run
         with:
           route: POST /repos/{owner}/{repo}/check-runs
-          owner: octokit
-          repo: request-action
+          owner: jingli-jenny
+          repo: workflow-test
           name: "Test check run"
           head_sha: ${{ github.sha }}
           output: | # The | is significant!
