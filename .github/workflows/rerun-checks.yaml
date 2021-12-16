@@ -24,7 +24,7 @@ jobs:
         id: init
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
-          name: Test With Init 
+          name: Test With Init (pull_request )
           status: in_progress
       - run: sleep 30
       - uses: LouisBrunner/checks-action@v1.2.0
