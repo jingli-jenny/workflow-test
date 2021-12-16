@@ -2,5 +2,5 @@ package a
 
 
 const (
-	TestA = "testA"
+	TestA = "testAA"
 )
