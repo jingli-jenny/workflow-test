@@ -1,11 +1,11 @@
 on:
   pull_request_review_comment:
-    types: [created]
+    types: [ created ]
 
 jobs:
     add-labels-issue:
       runs-on: ubuntu-latest
-      if: contains(github.event.comment.body, '/add-invalid') && github.event_name == 'issue_comment'
+      if: contains(github.event.comment.body, '/add-invalid') && github.event_name == 'pull_request_review_comment'
       steps:
       - uses: actions/checkout@v2
       - name: Add label
