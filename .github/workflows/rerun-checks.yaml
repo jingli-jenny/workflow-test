@@ -19,7 +19,7 @@ jobs:
         if: steps.check.outputs.triggered == 'true'
         id: create_check_run
         with:
-          route: POST /repos/{owner}/{repo}/check-suites
+          route: POST /repos/{owner}/{repo}/check-run
           owner: jingli-jenny
           repo: workflow-test
           name: "Run Checks"
