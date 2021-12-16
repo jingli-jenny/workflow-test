@@ -27,7 +27,7 @@ jobs:
   ubuntu:
     name: Code Checker AMD64 Ubuntu ${{ matrix.ubuntu }}
     runs-on: ubuntu-latest
-    if: contains(github.event.comment.body, '/run-checks') && github.event_name == 'pull_request_review'
+    if:  github.event_name == 'pull_request_review'
     timeout-minutes: 60
     strategy:
       fail-fast: false
@@ -36,6 +36,8 @@ jobs:
     env:
       UBUNTU: ${{ matrix.ubuntu }}
     steps:
+      - name: Dump context
+        uses: crazy-max/ghaction-dump-context@v1.2.0
       - name: Checkout
         uses: actions/checkout@v2
       # - name: Cache CCache Volumes
