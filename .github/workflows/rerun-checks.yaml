@@ -1,3 +1,4 @@
+name: Run Checks
 on:
   pull_request:
     types: [opened]
