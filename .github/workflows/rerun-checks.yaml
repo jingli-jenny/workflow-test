@@ -19,7 +19,7 @@ jobs:
         if: steps.check.outputs.triggered == 'true'
         id: create_check_run
         with:
-          route: POST /repos/{owner}/{repo}/check-runs
+          route: POST /repos/{owner}/{repo}/check-suites
           owner: jingli-jenny
           repo: workflow-test
           name: "Run Checks"
@@ -39,7 +39,7 @@ jobs:
         if: steps.check.outputs.triggered == 'true'
         id: update_check_run
         with:
-          route: PATCH /repos/{owner}/{repo}/check-runs/{check_run_id}
+          route: PATCH /repos/{owner}/{repo}/check-suites/{check_run_id}
           owner: jingli-jenny
           repo: workflow-test
           check_run_id: ${{ fromJson(steps.create_check_run.outputs.data).id }}
