@@ -1,8 +1,5 @@
 on:
-  pull_request_review:
-  pull_request_review_comment:
-    # types: [ created ]
-
+  pull_request:
 jobs:
     add-labels-issue:
       runs-on: ubuntu-latest
