@@ -22,7 +22,7 @@ jobs:
           route: POST /repos/{owner}/{repo}/check-runs
           owner: jingli-jenny
           repo: workflow-test
-          name: "Test check run"
+          name: "Run Checks"
           head_sha: ${{ github.sha }}
           output: | # The | is significant!
             title: Test check run title
