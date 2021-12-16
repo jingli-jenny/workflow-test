@@ -3,6 +3,8 @@ name: Code Checker
 
 # This workflow is triggered on pushes or pull request to the repository.
 on:
+  issue_comment:
+    types: [created]
   pull_request:
     # file paths to consider in the event. Optional; defaults to all.
     paths:
@@ -32,8 +34,37 @@ jobs:
     env:
       UBUNTU: ${{ matrix.ubuntu }}
     steps:
-      - name: Checkout
+      - uses: khan/pull-request-comment-trigger@master
+        id: check
+        with:
+          trigger: '/run-checks'
+          reaction: rocket
+        env:
+          GITHUB_TOKEN: '${{ secrets.GITHUB_TOKEN }}'
+      - name: GitHub API Request
+        if: steps.check.outputs.triggered == 'true'
+        id: request
+        uses: octokit/request-action@v2.0.0
+        with:
+          route: ${{ github.event.issue.pull_request.url }}
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      - name: Get PR informations
+        if: steps.check.outputs.triggered == 'true'
+        id: pr_data
+        run: |
+          echo "::set-output name=branch::${{ fromJson(steps.request.outputs.data).head.ref }}"
+          echo "::set-output name=repo_name::${{ fromJson(steps.request.outputs.data).base.repo.full_name }}"
+          echo "::set-output name=repo_clone_url::${{ fromJson(steps.request.outputs.data).base.repo.clone_url }}"
+          echo "::set-output name=repo_ssh_url::${{ fromJson(steps.request.outputs.data).base.repo.ssh_url }}"
+      - name: clone branch of PR
+        if: steps.check.outputs.triggered == 'true'
         uses: actions/checkout@v2
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          ref: ${{ steps.pr_data.outputs.branch }}
+      # - name: Checkout
+      #   uses: actions/checkout@v2
       # - name: Cache CCache Volumes
       #   uses: actions/cache@v1
       #   with:
