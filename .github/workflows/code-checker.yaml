@@ -25,7 +25,7 @@ on:
 jobs:
   ubuntu:
     name: Code Checker AMD64 Ubuntu  ${{ matrix.ubuntu }}
-    if: github.event_name == 'pull_request' || (github.event_name == 'pull_request_target' && github.event.label.name == 'safe to test'))
+    if: github.event_name == 'pull_request' || (github.event_name == 'pull_request_target' && github.event.label.name == 'safe to test')
     runs-on: ubuntu-${{ matrix.ubuntu }} 
     timeout-minutes: 60
     strategy:
