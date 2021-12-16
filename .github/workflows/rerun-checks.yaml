@@ -1,6 +1,7 @@
 on:
+  pull_request_review:
   pull_request_review_comment:
-    types: [ created ]
+    # types: [ created ]
 
 jobs:
     add-labels-issue:
