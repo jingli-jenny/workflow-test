@@ -1,175 +1,28 @@
 on:
-  issue_comment:
+  pull_request_review_comment:
     types: [created]
+
 jobs:
-  deploy:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: khan/pull-request-comment-trigger@master
-        id: check
-        with:
-          trigger: '/run-checks'
-          reaction: rocket
-        env:
-          GITHUB_TOKEN: '${{ secrets.GITHUB_TOKEN }}'
+    add-labels-issue:
+      runs-on: ubuntu-latest
+      if: contains(github.event.comment.body, '/add-invalid') && github.event_name == 'issue_comment'
+      steps:
       - uses: actions/checkout@v2
-      - name: Prepare PHP Checks
-        uses: dflydev/check-runs-action@v1
-        with:
-          token: ${{ secrets.GITHUB_TOKEN }}
-          collection: php
-          checks: |
-            [
-              { "id": "phpunit", "name": "PHPUnit", "status": "queued" },
-              { "id": "psalm", "name": "Psalm", "status": "queued" },
-              { "id": "phpcs", "name": "PHP_CodeSniffer", "status": "queued" },
-              { "id": "dusk", "name": "Dusk", "status": "queued" }
-            ]
-      - name: Prepare Node Checks
-        uses: dflydev/check-runs-action@v1
-        with:
-          token: ${{ secrets.GITHUB_TOKEN }}
-          collection: node
-          checks: |
-            [
-              { "id": "eslint", "name": "ESLint", "status": "queued" },
-              { "id": "build", "name": "npm build", "status": "queued" }
-            ]
-      - name: Report PHPUnit Starting
-        uses: dflydev/check-runs-action@v1
-        with:
-          token: ${{ secrets.GITHUB_TOKEN }}
-          collection: php
-          id: phpunit
-          status: in_progress
-
-      - name: PHPUnit
-        id: phpunit
-        continue-on-error: true
-        run: |
-          sleep 5 && false
-      - name: Report PHPUnit Conclusion
-        if: always()
-        uses: dflydev/check-runs-action@v1
-        with:
-          token: ${{ secrets.GITHUB_TOKEN }}
-          collection: php
-          id: phpunit
-          conclusion: ${{ steps.phpunit.outcome }}
-
-      - name: Report PHP_CodeSniffer Starting
-        uses: dflydev/check-runs-action@v1
-        with:
-          token: ${{ secrets.GITHUB_TOKEN }}
-          collection: php
-          id: phpcs
-          status: in_progress
-
-      - name: PHP_CodeSniffer
-        id: phpcs
-        continue-on-error: true
-        run: |
-          sleep 2
-      - name: Report PHP_CodeSniffer Conclusion
-        if: always()
-        uses: dflydev/check-runs-action@v1
-        with:
-          token: ${{ secrets.GITHUB_TOKEN }}
-          collection: php
-          id: phpcs
-          conclusion: ${{ steps.phpcs.outcome }}
-
-      - name: Report ESLint Starting
-        uses: dflydev/check-runs-action@v1
-        with:
-          token: ${{ secrets.GITHUB_TOKEN }}
-          collection: node
-          id: eslint
-          status: in_progress
-
-      - name: ESLint
-        id: eslint
-        continue-on-error: true
-        run: |
-          sleep 1 && false
-      - name: Report ESLint Conclusion
-        if: always()
-        uses: dflydev/check-runs-action@v1
-        with:
-          token: ${{ secrets.GITHUB_TOKEN }}
-          collection: node
-          id: eslint
-          conclusion: ${{ steps.eslint.outcome }}
-
-
-      - name: Report Build Starting
-        uses: dflydev/check-runs-action@v1
-        with:
-          token: ${{ secrets.GITHUB_TOKEN }}
-          collection: node
-          id: build
-          status: in_progress
-
-      - name: Build
-        id: build
-        continue-on-error: true
-        run: |
-          sleep 5
-      - name: Report Build Conclusion
-        if: always()
-        uses: dflydev/check-runs-action@v1
-        with:
-          token: ${{ secrets.GITHUB_TOKEN }}
-          collection: node
-          id: build
-          conclusion: ${{ steps.build.outcome }}
-
-
-      - name: Report Dusk Starting
-        uses: dflydev/check-runs-action@v1
-        with:
-          token: ${{ secrets.GITHUB_TOKEN }}
-          collection: php
-          id: dusk
-          status: in_progress
-
-      - name: Dusk
-        id: dusk
-        run: |
-          sleep 2 && false
-      - name: Report Dusk Conclusion
-        if: always()
-        uses: dflydev/check-runs-action@v1
-        with:
-          token: ${{ secrets.GITHUB_TOKEN }}
-          collection: php
-          id: dusk
-          conclusion: ${{ steps.dusk.outcome }}
-
-      - name: Report Psalm Starting
-        uses: dflydev/check-runs-action@v1
-        with:
-          token: ${{ secrets.GITHUB_TOKEN }}
-          collection: php
-          id: psalm
-          status: in_progress
-
-      - name: Psalm
-        id: psalm
-        run: |
-          sleep 15 && false
-      - name: Report Psalm Conclusion
-        if: always()
-        uses: dflydev/check-runs-action@v1
-        with:
-          token: ${{ secrets.GITHUB_TOKEN }}
-          collection: php
-          id: psalm
-          conclusion: ${{ steps.psalm.outcome }}
-
-      - name: Clean up checks
-        if: always()
-        uses: dflydev/check-runs-action@v1
-        with:
-          token: ${{ secrets.GITHUB_TOKEN }}
-          conclusion: cancelled
+      - name: Add label
+            uses: actions/github-script@0.9.0
+            if: success()
+            with:
+              github-token: ${{secrets.GITHUB_TOKEN}}
+              script: |
+                github.issues.addLabels({
+                  issue_number: context.payload.pull_request.number,
+                  owner: context.repo.owner,
+                  repo: context.repo.repo,
+                  labels: ['invalid']
+                })
+                github.issues.createComment({
+                  issue_number: context.payload.pull_request.number,
+                  owner: context.repo.owner,
+                  repo: context.repo.repo,
+                  body: '👋 Added invalid :)!'
+                })
