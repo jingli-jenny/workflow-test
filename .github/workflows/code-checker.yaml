@@ -26,7 +26,7 @@ jobs:
   ubuntu:
     name: Code Checker AMD64 Ubuntu ${{ matrix.ubuntu }}
     runs-on: ubuntu-latest
-    if: github.event_name == 'pull_request' || (github.event_name == 'pull_request_target' && github.event.label.name =='ready-to-test')
+    if: github.event_name == 'pull_request' || (github.event_name == 'pull_request_target' && contains(github.event.pull_request.labels.*.name, 'safe to test'))
     timeout-minutes: 60
     strategy:
       fail-fast: false
@@ -37,22 +37,22 @@ jobs:
     steps:
       - name: Dump context
         uses: crazy-max/ghaction-dump-context@v1.2.0
-      # - name: Checkout
-      #   uses: actions/checkout@v2
-      # - name: Cache CCache Volumes
-      #   uses: actions/cache@v1
-      #   with:
-      #     path: .docker/amd64-ubuntu${{ matrix.ubuntu }}-ccache
-      #     key: ubuntu${{ matrix.ubuntu }}-ccache-${{ hashFiles('internal/core/**') }}
-      #     restore-keys: ubuntu${{ matrix.ubuntu }}-ccache-
-      # - name: Cache Go Mod Volumes
-      #   uses: actions/cache@v1
-      #   with:
-      #     path: .docker/amd64-ubuntu${{ matrix.ubuntu }}-go-mod
-      #     key: ubuntu${{ matrix.ubuntu }}-go-mod-${{ hashFiles('**/go.sum') }}
-      #     restore-keys: ubuntu${{ matrix.ubuntu }}-go-mod-
-      # - name: Code Check
-      #   env:
-      #     CHECK_BUILDER: "1"
-      #   run: |
-      #     ./build/builder.sh /bin/bash -c "make check-proto-product && make verifiers"
+      - name: Checkout
+        uses: actions/checkout@v2
+      - name: Cache CCache Volumes
+        uses: actions/cache@v1
+        with:
+          path: .docker/amd64-ubuntu${{ matrix.ubuntu }}-ccache
+          key: ubuntu${{ matrix.ubuntu }}-ccache-${{ hashFiles('internal/core/**') }}
+          restore-keys: ubuntu${{ matrix.ubuntu }}-ccache-
+      - name: Cache Go Mod Volumes
+        uses: actions/cache@v1
+        with:
+          path: .docker/amd64-ubuntu${{ matrix.ubuntu }}-go-mod
+          key: ubuntu${{ matrix.ubuntu }}-go-mod-${{ hashFiles('**/go.sum') }}
+          restore-keys: ubuntu${{ matrix.ubuntu }}-go-mod-
+      - name: Code Check
+        env:
+          CHECK_BUILDER: "1"
+        run: |
+          ./build/builder.sh /bin/bash -c "make check-proto-product && make verifiers"
