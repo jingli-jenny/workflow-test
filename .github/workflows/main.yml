@@ -1,17 +1,41 @@
 name: Build and test
+# TODO: do not trigger action for some document file update
 
-
-on: 
+# This workflow is triggered on pushes or pull request to the repository.
+on:
   push:
-    branches: [main]
-  issue_comment:
-    types: [created, edited]
+    # file paths to consider in the event. Optional; defaults to all.
+    paths:
+      - 'scripts/**'
+      - 'internal/**'
+      - 'cmd/**'
+      - 'build/**'
+      - '.github/workflows/main.yaml'
+      - '.env'
+      - docker-compose.yml
+      - Makefile
+      - go.mod
+      - '!**.md'
+      - '!build/ci/jenkins/**'
+  pull_request:
+    # file paths to consider in the event. Optional; defaults to all.
+    paths:
+      - 'scripts/**'
+      - 'internal/**'
+      - 'cmd/**'
+      - 'build/**'
+      - '.github/workflows/main.yaml'
+      - '.env'
+      - docker-compose.yml
+      - Makefile
+      - go.mod
+      - '!**.md'
+      - '!build/ci/jenkins/**'
 
 jobs:
   ubuntu:
     name: Build and test AMD64 Ubuntu ${{ matrix.ubuntu }}
     runs-on: ubuntu-latest
-    if: "(github.event_name == 'push' ||  (github.event_name == 'issue_comment' && startsWith(github.event.comment.body, '/rerun-unit')))"
     timeout-minutes: 90
     strategy:
       fail-fast: false
@@ -20,95 +44,6 @@ jobs:
     env:
       UBUNTU: ${{ matrix.ubuntu }}
     steps:
-      - name: Is Organization Member
-        shell: bash
-        id: is_organization_member
-        run: |
-           response_code=$(curl -sIL -w %{http_code} -H "Authorization: token ${{ secrets.GET_ORG_MEMBERS }}" -H "Accept: application/vnd.github.v3+json" \
-           -o /dev/null https://api.github.com/orgs/${GITHUB_REPOSITORY_OWNER}/members/${{ github.event.sender.login }})
-           echo " response code is ${response_code} "
-           if [[ ${response_code} == '204' ]];then
-              echo "::set-output name=is-member::true"
-           elif [[ ${response_code} == '404' ]]; then 
-              echo "::set-output name=is-member::false"
-           else
-              echo "Please check if the repository secret GET_ORG_MEMBERS  still exists and have the permission to read organization members."
-              exit 1
-           fi
-      - name: Get Job URL
-        if: "github.event_name == 'issue_comment' && steps.is_organization_member.outputs.is-member == 'true'"
-        id: get_job_url
-        shell: bash
-        run:  |        
-          echo "::set-output name=job-url::'$GITHUB_SERVER_URL/$GITHUB_REPOSITORY/actions/runs/$GITHUB_RUN_ID'"
-      - name: Create Comment for Org Member
-        if: "github.event_name == 'issue_comment' && steps.is_organization_member.outputs.is-member == 'true'"
-        uses: actions-cool/issues-helper@v2.5.0       
-        with:
-          actions: 'create-comment'
-          token: ${{ secrets.GITHUB_TOKEN }}
-          issue-number: ${{ github.event.issue.number }}
-          body: |
-            Hello ${{ github.event.sender.login }}. Workflow is successfully triggered,  get more information from ${{ steps.get_job_url.outputs.job-url }}.    
-      - name: Create Comment for Non-Org Member
-        if: "github.event_name == 'issue_comment' && steps.is_organization_member.outputs.is-member == 'false'"
-        uses: actions-cool/issues-helper@v2.5.0       
-        with:
-          actions: 'create-comment'
-          token: ${{ secrets.GITHUB_TOKEN }}
-          issue-number: ${{ github.event.issue.number }}
-          body: |
-            Hello ${{ github.event.sender.login }}, you are not in the organization, so you do not have the permission to run the workflow, please comment `@jingli-jenny/support-team` for help.
-           
-      # - name: Create Comment for Job Url
-      #   uses: actions-cool/issues-helper@v2.5.0
-      #   if: "github.event_name == 'issue_comment'"
-      #   with:
-      #     actions: 'create-comment'
-      #     token: ${{ secrets.GITHUB_TOKEN }}
-      #     issue-number: ${{ github.event.issue.number }}
-      #     body: |
-      #       Hello ${{ github.event.issue.user.login }}. Add some comments.
+      - name: Checkout
+        uses: actions/checkout@v2
 
-      #       你好 ${{ github.event.issue.user.login }}
-      # - name: Checkout
-      #   uses: actions/checkout@v2
-      # - name: Get All Organization Member
-      #   if: "github.event_name == 'issue_comment'"
-      #   shell: bash
-      #   run: |
-      #      pwd
-      #      ls -lah
-      #      echo "all members are $(cat members.csv)"
-      #      echo "current is ${{ github.event.issue.user.login }}"
-      # - name: curl member record file
-      #   run: |
-      #     curl -H "Authorization: token ${{ secrets.GET_ORG_MEMBERS }}" \
-      #     "https://raw.githubusercontent.com/modernapsninja/admin-private/main/userdata/members/${{ github.event.sender.login }}_${{ github.event.sender.id }}.json" \
-      #     -o /tmp/raw_member_record_curl.json && cat /tmp/raw_member_record_curl.json
-      # - name: check if member record exists
-      #   run: |
-      #     cat /tmp/raw_member_record_curl.json
-      # - name: Get Job URL
-      #   if: "github.event_name == 'issue_comment'"
-      #   id: get_job_url
-      #   shell: bash
-      #   run:  |        
-      #     echo "::set-output name=job-url::'$GITHUB_SERVER_URL/$GITHUB_REPOSITORY/actions/runs/$GITHUB_RUN_ID'"
-      # - name: Create reply comment on PR
-      #   uses: actions/github-script@v5.0.0 
-      #   if: "github.event_name == 'issue_comment'"
-      #   env:
-      #     GITHUB_TOKEN: ${{ github.token }}
-      #     JOB_URL: ${{ steps.get_job_url.outputs.job-url }}
-      #   with:
-      #     script: |
-      #       const {JOB_URL} = process.env
-      #       github.rest.issues.createComment({
-      #         issue_number: context.issue.number,
-      #         owner: context.repo.owner,
-      #         repo: context.repo.repo,
-      #         body: `${JOB_URL}`
-      #       })
-
-        
