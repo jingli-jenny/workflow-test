@@ -162,6 +162,8 @@ pull_request_rules:
         - "check-pending=Code Checker AMD64 Ubuntu 18.04"
         - "check-neutral=Code Checker AMD64 Ubuntu 18.04"
         - "check-failure=Code Checker AMD64 Ubuntu 18.04"
+        - -"status-success=Code Checker AMD64 Ubuntu 18.04"
+        
     actions:
       label:
         remove:
