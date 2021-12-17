@@ -159,8 +159,9 @@ pull_request_rules:
       - base=master
       - or:
         - "check-pending=Code Checker AMD64 Ubuntu 18.04"
-        - "check-pending=Build and test AMD64 Ubuntu 18.04"
-        - "check-pending=continuous-integration/jenkins/pr-merge"
+        - "check-pending=Code Checker AMD64 Ubuntu 18.04"
+        - "check-neutral=Code Checker AMD64 Ubuntu 18.04"
+        - "check-failure=Code Checker AMD64 Ubuntu 18.04"
     actions:
       label:
         remove:
