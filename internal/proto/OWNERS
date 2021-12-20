@@ -1,0 +1,5 @@
+  "{data_coord|index_coord|internal|proxy|query_coord|root_coord}\\.proto":
+    labels:
+      - area/internal-api
+    approvers:
+      - maintainers
