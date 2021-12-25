@@ -79,29 +79,12 @@ pull_request_rules:
       - base=master
       - title~=\[skip e2e\]
       - label=kind/improvement
-      - files~=^(?!.*\.(go|cpp)).*$
+      - files~=^(?!.*\.(go|h|cpp)).*$
     actions:
       label:
         add:
           - ci-passed
 
-  - name: Remove ci-passed when code check failed
-    conditions:
-      - base=master
-      - "check-failure=Code Checker AMD64 Ubuntu 18.04"
-    actions:
-      label:
-        remove:
-          - ci-passed
-
-  - name: Remove ci-passed when unittest failed
-    conditions:
-      - base=master
-      - "check-failure=Build and test AMD64 Ubuntu 18.04"
-    actions:
-      label:
-        remove:
-          - ci-passed
 
   - name: Blocking PR if missing a related issue or PR doesn't have kind/improvement label
     conditions:
@@ -147,45 +130,18 @@ pull_request_rules:
       - title~=\[skip e2e\]
       - "status-success=Code Checker AMD64 Ubuntu 18.04"
       - "status-success=Build and test AMD64 Ubuntu 18.04"
-      - -files~=^(?!.*\.(go|cpp)).*$
+      - -files~=^(?!.*\.(go|h|cpp)).*$
     actions:
       label:
         add:
           - ci-passed
 
-  
-  - name: Remove ci-passed label when rerun test
+
+
+  - name: Remove ci-passed label when status for code checker or ut  is not success
     conditions:
       - base=master
-      - or:
-        - "check-pending=Code Checker AMD64 Ubuntu 18.04"
-        - "check-pending=Code Checker AMD64 Ubuntu 18.04"
-        - "check-neutral=Code Checker AMD64 Ubuntu 18.04"
-        - "check-failure=Code Checker AMD64 Ubuntu 18.04"
-        - "status-success!=Code Checker AMD64 Ubuntu 18.04"
-        
-    actions:
-      label:
-        remove:
-          - ci-passed
-
-  - name: Remove ci-passed label when rerun test
-    conditions:
-      - base=master
-      - -files~=^(?!.*\.(go|cpp)).*$
-      - -title~=\[skip e2e\]
-      - "status-success!=continuous-integration/jenkins/pr-merge"        
-    actions:
-      label:
-        remove:
-          - ci-passed
-
-  
-
-  - name: Remove ci-passed label when rerun test
-    conditions:
-      - base=master
-      - -files~=^(?!.*\.(go|cpp)).*$
+      - -files~=^(?!.*\.(go|h|cpp)).*$
       - or:
         - "status-success!=Code Checker AMD64 Ubuntu 18.04"
         - "status-success!=Build and test AMD64 Ubuntu 18.04"     
@@ -194,10 +150,10 @@ pull_request_rules:
         remove:
           - ci-passed
 
-  - name: Remove ci-passed label when rerun test
+  - name: Remove ci-passed label when  status for jenkins job is not success
     conditions:
       - base=master
-      - -files~=^(?!.*\.(go|cpp)).*$
+      - -files~=^(?!.*\.(go|h|cpp)).*$
       - files~=^(?!internal\/.*_test\.go).*$
       - -title~=\[skip e2e\]
       - "status-success!=continuous-integration/jenkins/pr-merge"        
@@ -205,3 +161,27 @@ pull_request_rules:
       label:
         remove:
           - ci-passed
+
+  - name: Remove ci-passed label when status for code checker or ut  is not success
+    conditions:
+      - base=master
+      - -files~=^(?!.*\.(go|h|cpp)).*$
+      - or:
+        - "check-failure=Code Checker AMD64 Ubuntu 18.04"
+        - "check-failure=Build and test AMD64 Ubuntu 18.04"     
+    actions:
+      comment:
+        message: |
+          @{{author}} Comment `rerun ut`, if you want to rerun failed checks
+
+  - name: Add approve and lgtm for [automated] pull request
+    conditions:
+      - base=master
+      - "status-success=Code Checker AMD64 Ubuntu 18.04"  
+      - title~=\[automated\]
+      - author='carawaylj'
+    actions:
+      label:
+        add:
+          - approve
+          - lgtm
