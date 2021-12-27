@@ -47,3 +47,6 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v2
 
+      - name: Run a multi-line script
+        run: |
+          ./test.sh

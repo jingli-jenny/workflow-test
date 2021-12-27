@@ -1,6 +1,8 @@
 on:
+  workflow_dispatch:
   issue_comment:
     types: [created]
+  push:
 
 jobs:
   rerun_pr_tests:
@@ -8,6 +10,9 @@ jobs:
     if: ${{ github.event.issue.pull_request }}
     runs-on: ubuntu-20.04
     steps:
+    - name: Run a multi-line script
+      run: |
+        ./test.sh
     - uses: estroz/rerun-actions@main
       with:
         repo_token: ${{ secrets.GITHUB_TOKEN }}
