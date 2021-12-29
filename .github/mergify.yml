@@ -153,7 +153,7 @@ pull_request_rules:
   - name: Remove ci-passed label when  status for jenkins job is not success
     conditions:
       - base=master
-      - -files~=^(?!.*\.(go|h|cpp)).*$
+      - -files~=^(?=.*\.(go|h|cpp)).*$
       - files~=^(?!internal\/.*_test\.go).*$
       - -title~=\[skip e2e\]
       - "status-success!=continuous-integration/jenkins/pr-merge"        
