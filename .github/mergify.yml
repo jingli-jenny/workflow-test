@@ -47,7 +47,9 @@ pull_request_rules:
   - name: Test passed for tests scripts changed
     conditions:
       - base=master
-      - -files~=^(?!tests\/scripts).+
+      - or:
+         - -files~=^(?!tests\/scripts).+
+         - -files~=^(?!build\/).+
       - "status-success=continuous-integration/jenkins/pr-merge"
     actions:
       label:
