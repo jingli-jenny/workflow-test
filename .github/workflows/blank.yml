@@ -28,7 +28,7 @@ jobs:
         with:
           # Repository name with owner. For example, actions/checkout
           # Default: ${{ github.repository }}
-          repository: 'https://github.com/jingli-jenny/test-private.git'
+          repository: 'jingli-jenny/test-private'
 
       # # Runs a set of commands using the runners shell
       # - name: Run a multi-line script
